@@ -1,6 +1,9 @@
 bzd
 ===
+> [八斩刀](https://zh.wikipedia.org/wiki/%E5%85%AB%E6%96%AC%E5%88%80),八斩刀为学习咏春拳的应用武器,由八段组成.
 
+
+## 简介
 devops cli
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
@@ -9,10 +12,21 @@ devops cli
 [![License](https://img.shields.io/npm/l/bzd.svg)](https://github.com/felix9ia/bzd/blob/master/package.json)
 
 <!-- toc -->
+* [研发](#研发)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
+# 研发
+`lint` 到全局的引用。
+
+```
+yarn lint
+```
+
+
+
 # Usage
+
 <!-- usage -->
 ```sh-session
 $ npm install -g bzd
@@ -26,10 +40,28 @@ USAGE
 ...
 ```
 <!-- usagestop -->
+
 # Commands
 <!-- commands -->
+* [`bzd clone [FILE]`](#bzd-clone-file)
 * [`bzd hello [FILE]`](#bzd-hello-file)
 * [`bzd help [COMMAND]`](#bzd-help-command)
+
+## `bzd clone [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bzd clone [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/clone.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/src/commands/clone.ts)_
 
 ## `bzd hello [FILE]`
 
