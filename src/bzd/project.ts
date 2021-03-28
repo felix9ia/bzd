@@ -1,17 +1,14 @@
 import * as fs from 'fs'
 import {Command} from '@oclif/command'
-import BzdConfig from './config'
 import ProjectConfig from './project-config'
+import simpleGit, {SimpleGit} from 'simple-git'
 
 export default class BzdProject extends Command {
-  private bzdConfig: BzdConfig
-
   configs: ProjectConfig
 
   // backup overload https://juejin.cn/post/6872903521440628744
   constructor(args: any, opts: any, name?: string, path?: string) {
     super(args, opts)
-    this.bzdConfig = new BzdConfig(args, opts)
     this.configs = new ProjectConfig()
     if (name) {
       this.configs.name = name
@@ -29,23 +26,22 @@ export default class BzdProject extends Command {
     return keys[keys.length - 1].split('.')[0]
   }
 
-  async initProject(repoPath: string) {
+  async create(repoPath: string, rootDir: string) {
+    this.configs.repoPath = repoPath
     this.configs.name = this.parseProjectName(repoPath)
-    await this.createProject()
-    await this.bzdConfig.saveProject(this)
+    const projectPath = `${rootDir}/${this.configs.name}`
+    await fs.promises.mkdir(projectPath, {recursive: true})
+    this.configs.path = projectPath
   }
 
-  async createProject() {
-    const isExist = await this.bzdConfig.hasInitRootDir()
-    const projectPath = `${this.bzdConfig.rootDir}/${this.configs.name}`
-
-    if (isExist) {
-      throw new Error(`project has exist, path is: ${projectPath}`)
-    } else {
-      await fs.promises.mkdir(projectPath, {recursive: true})
-      this.log(`project path: ${projectPath}`)
+  public async clone() {
+    const git: SimpleGit = simpleGit()
+    try {
+      await git.clone(this.configs.repoPath, this.configs.path)
+      this.log(`${this.configs.name} clone success`)
+    } catch (error) {
+      this.log('error: ', error)
     }
-    this.configs.path = projectPath
   }
 
   async run() {

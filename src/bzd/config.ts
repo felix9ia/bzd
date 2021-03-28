@@ -33,18 +33,10 @@ export default class BzdConfig extends Command {
     return new YAMLMap()
   }
 
-  async saveProject(project: BzdProject) {
-    const projects: BzdProject[] = [
-      project,
-    ]
-    await this.saveProjects(projects)
-  }
-
-  async saveProjects(projects: BzdProject[]) {
-    const oldConfigMap = await this.getExistProjectConfigs()
-    const newConfigMap = await this.createProjects(projects)
-    await this.overwriteProjects(newConfigMap, oldConfigMap)
-  }
+  // async saveProjects(projects: BzdProject[]) {
+  //   const newConfigMap = await this.createProjects(projects)
+  //   await this.overwriteProjects(newConfigMap, oldConfigMap)
+  // }
 
   async createProjects(projects: BzdProject[]): Promise<YAMLMap> {
     const configMapByProjectName = new YAMLMap()
@@ -53,6 +45,14 @@ export default class BzdConfig extends Command {
     })
 
     return configMapByProjectName
+  }
+
+  async saveProject(project: BzdProject) {
+    this.log('project ' + project)
+    // const projects: BzdProject[] = [
+    //   project,
+    // ]
+    // const oldConfigMap = await this.getExistProjectConfigs()
   }
 
   async overwriteProjects(newConfigMap: YAMLMap, oldConfigMap: YAMLMap) {
