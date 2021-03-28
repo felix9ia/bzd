@@ -13,7 +13,7 @@
     "@oclif/plugin-help": "^3",
     "simple-git": "^2.37.0",
     "tslib": "^1",
-    "yaml": "^1.10.2"
+    "yaml": "^2.0.0-4"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",

@@ -1,7 +1,6 @@
 import * as os from 'os'
 import * as fs from 'fs'
-import {stringify} from 'yaml'
-import {YAMLMap} from 'yaml/types'
+import {stringify, parseDocument, YAMLMap} from 'yaml'
 import {Command} from '@oclif/command'
 import BzdProject from './project'
 import BzdConfig from './bzd-config'
@@ -24,6 +23,9 @@ export default class BzdConfigure extends Command {
     this.configFile = `${this.rootDir}/${configName}`
 
     this.bzdConfig = new BzdConfig()
+    this.bzdConfig.rootDir = this.rootDir
+    this.bzdConfig.configFile = this.configFile
+
     this.projectConfigMap = new YAMLMap()
   }
 
@@ -36,10 +38,20 @@ export default class BzdConfigure extends Command {
     }
   }
 
-  async getExistProjectConfigs(): Promise<YAMLMap> {
-    // TODO 查找文件
-    // TODO 读取 ymal
-    // TODO 读取到 projects 一项
+  async getExistProjectConfigs(): Promise<any> {
+    let allConfigData: string
+
+    try {
+      allConfigData = await this.readConfig()
+    } catch (error) {
+      allConfigData = ''
+    }
+
+    const configDoc = parseDocument(allConfigData)
+    const projectConfig = configDoc.get(BzdConfig.projectsKey)
+    if (projectConfig) {
+      return projectConfig
+    }
     return new YAMLMap()
   }
 
@@ -50,21 +62,37 @@ export default class BzdConfigure extends Command {
   }
 
   async saveProject(project: BzdProject) {
-    this.log('project ' + project)
-    // const oldConfigMap = await this.getExistProjectConfigs()
-    const newProjectConfigMap = await this.createProjectConfig(project)
-    // const resultConfigMap = await this.overwriteProjectsConfig(newConfigMap, oldConfigMap)
-    // await this.writeProjectConfig(resultConfigMap)
+    const oldProjectConfigMap = await this.getExistProjectConfigs()
+    this.log('oldProjectConfigMap ' + oldProjectConfigMap)
 
-    this.bzdConfig.projects = newProjectConfigMap
+    const newProjectConfigMap = await this.createProjectConfig(project)
+    const resultConfigMap = await this.overwriteProjectsConfig(project.configs.name, newProjectConfigMap, oldProjectConfigMap)
+
+    this.bzdConfig.projects = resultConfigMap
     await this.writeConfig()
   }
 
-  async overwriteProjectsConfig(newConfigMap: YAMLMap, oldConfigMap: YAMLMap): Promise<YAMLMap> {
-    // TODO 遍历是否有重复的,有则用新的覆盖旧的
-    this.log('old: ', newConfigMap, oldConfigMap)
-    return new YAMLMap()
-    // TODO 保存
+  async overwriteProjectsConfig(projectName: string, newConfigMap: YAMLMap, oldConfigMap: YAMLMap): Promise<YAMLMap> {
+    const oldProjectConfig = oldConfigMap.get(projectName)
+    if (oldProjectConfig) {
+      this.log('old project config exist, will overwrite')
+    } else {
+      this.log('new project will add')
+    }
+
+    // 覆盖旧的, 或者添加
+    oldConfigMap.set(projectName, newConfigMap.get(projectName))
+    this.log('current config is: ' + oldConfigMap)
+    return oldConfigMap
+  }
+
+  async readConfig(): Promise<string> {
+    try {
+      const file = await fs.promises.readFile(this.configFile, {encoding: 'utf8'})
+      return file
+    } catch (error) {
+      throw  new Error('got error when read config')
+    }
   }
 
   async writeConfig() {
