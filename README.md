@@ -46,6 +46,7 @@ USAGE
 * [`bzd clone [REPO]`](#bzd-clone-repo)
 * [`bzd hello [FILE]`](#bzd-hello-file)
 * [`bzd help [COMMAND]`](#bzd-help-command)
+* [`bzd lint [FILE]`](#bzd-lint-file)
 * [`bzd serve [FILE]`](#bzd-serve-file)
 
 ## `bzd clone [REPO]`
@@ -101,6 +102,22 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
+## `bzd lint [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bzd lint [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/lint.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/src/commands/lint.ts)_
+
 ## `bzd serve [FILE]`
 
 describe the command here
@@ -111,8 +128,9 @@ USAGE
 
 OPTIONS
   -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -h, --help                              show CLI help
+  -n, --name=name                         name to print
+  --stage=development|staging|production
 ```
 
 _See code: [src/commands/serve.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/src/commands/serve.ts)_

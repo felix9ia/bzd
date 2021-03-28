@@ -14,7 +14,7 @@ export default class Serve extends Command {
     name: flags.string({char: 'n', description: 'name to print'}),
     // flag with no value (-f, --force)
     force: flags.boolean({char: 'f'}),
-    stage: flags.string({options: ['development', 'staging', 'production']}),
+    stage: flags.string({options: ['dev', 'test', 'prod']}),
   }
 
   static args = [{name: 'file'}]
@@ -36,7 +36,7 @@ export default class Serve extends Command {
         name: 'stage',
         message: 'select a stage',
         type: 'list',
-        choices: [{name: 'development'}, {name: 'staging'}, {name: 'production'}],
+        choices: [{name: 'dev'}, {name: 'test'}, {name: 'prod'}],
       }])
       stage = responses.stage
     }
