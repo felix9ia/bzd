@@ -3,7 +3,7 @@ import BzdProject from '../bzd/project'
 import BzdConfigure from '../bzd/configure'
 
 export default class Clone extends Command {
-  private bzdProject: BzdProject
+  bzdProject: BzdProject
 
   private bzdConfigure: BzdConfigure
 
@@ -43,12 +43,14 @@ export default class Clone extends Command {
       throw  new Error('repoPath is empty')
     }
     const projectPath = this.bzdProject.configs.path
-    const projectName  =  this.parseProjectName(repoPath)
+    const projectName = this.parseProjectName(repoPath)
 
     await this.bzdProject.create(projectName, repoPath, this.bzdConfigure.rootDir)
     this.log(`project path: ${projectPath}`)
     await this.bzdProject.clone()
 
-    await this.bzdConfigure.saveProject(this.bzdProject)
+    // TODO 安装相应环境依赖的问题
+
+    await this.bzdConfigure.saveProject(this.bzdProject.configs)
   }
 }

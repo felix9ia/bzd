@@ -1,7 +1,7 @@
 import {Command, flags} from '@oclif/command'
 
 export default class Run extends Command {
-  static description = 'describe the command here'
+  static description = 'run specified Makefile target command at project\'s root directory '
 
   static flags = {
     help: flags.help({char: 'h'}),

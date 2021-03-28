@@ -1,8 +1,8 @@
 import * as os from 'os'
 import * as fs from 'fs'
-import {stringify, parseDocument, YAMLMap} from 'yaml'
+import {stringify, parse} from 'yaml'
 import {Command} from '@oclif/command'
-import BzdProject from './project'
+import ProjectConfig from './project-config'
 import BzdConfig from './bzd-config'
 
 export default class BzdConfigure extends Command {
@@ -11,8 +11,6 @@ export default class BzdConfigure extends Command {
   configFile: string
 
   bzdConfig: BzdConfig
-
-  projectConfigMap: YAMLMap
 
   constructor(args: any, opts: any) {
     super(args, opts)
@@ -25,8 +23,7 @@ export default class BzdConfigure extends Command {
     this.bzdConfig = new BzdConfig()
     this.bzdConfig.rootDir = this.rootDir
     this.bzdConfig.configFile = this.configFile
-
-    this.projectConfigMap = new YAMLMap()
+    this.bzdConfig.projects = []
   }
 
   async hasInitRootDir(): Promise<boolean> {
@@ -38,38 +35,40 @@ export default class BzdConfigure extends Command {
     }
   }
 
-  async createProjectConfig(project: BzdProject): Promise<YAMLMap> {
-    const configMapByProjectName = new YAMLMap()
-    configMapByProjectName.set(project.configs.name, project.configs)
-    return configMapByProjectName
+  async getProjects() {
+    const oldProjectConfig = await this.getExistProjectConfigs()
+    this.log('getProjects:' + oldProjectConfig)
   }
 
-  async saveProject(project: BzdProject) {
-    const oldProjectConfigMap = await this.getExistProjectConfigs()
-    this.log('oldProjectConfigMap ' + oldProjectConfigMap)
+  async saveProject(projectConfig: ProjectConfig) {
+    const oldProjectConfigs = await this.getExistProjectConfigs()
+    this.log('oldProjectConfigs are: ' + oldProjectConfigs)
 
-    const newProjectConfigMap = await this.createProjectConfig(project)
-    const resultConfigMap = await this.overwriteProjectsConfig(project.configs.name, newProjectConfigMap, oldProjectConfigMap)
+    const newProjectConfig = projectConfig
+    this.log('newProjectConfig is: ' + newProjectConfig)
 
-    this.bzdConfig.projects = resultConfigMap
+    const resultConfigs = await this.overwriteProjectsConfig(projectConfig.name, newProjectConfig, oldProjectConfigs)
+
+    this.bzdConfig.projects = resultConfigs
     await this.writeConfig()
   }
 
-  async overwriteProjectsConfig(projectName: string, newConfigMap: YAMLMap, oldConfigMap: YAMLMap): Promise<YAMLMap> {
-    const oldProjectConfig = oldConfigMap.get(projectName)
-    if (oldProjectConfig) {
-      this.log('old project config exist, will overwrite')
-    } else {
-      this.log('new project will add')
+  async overwriteProjectsConfig(projectName: string, newProjectConfig: ProjectConfig, oldProjectConfigs: ProjectConfig[]): Promise<ProjectConfig[]> {
+    const findIndex = oldProjectConfigs.findIndex((conf => conf.name === newProjectConfig.name))
+
+    if (findIndex === -1) {
+      this.log('new projectConfig will add')
+      oldProjectConfigs.push(newProjectConfig)
+      return oldProjectConfigs
     }
 
-    // 覆盖旧的, 或者添加
-    oldConfigMap.set(projectName, newConfigMap.get(projectName))
-    this.log('current config is: ' + oldConfigMap)
-    return oldConfigMap
+    oldProjectConfigs[findIndex] = newProjectConfig
+    this.log('old projectConfig config exist, will overwrite, current config is: ' + oldProjectConfigs)
+
+    return oldProjectConfigs
   }
 
-  async getExistProjectConfigs(): Promise<any> {
+  async getExistProjectConfigs(): Promise<ProjectConfig[]> {
     let allConfigData: string
 
     try {
@@ -78,12 +77,12 @@ export default class BzdConfigure extends Command {
       allConfigData = ''
     }
 
-    const configDoc = parseDocument(allConfigData)
-    const projectConfig = configDoc.get(BzdConfig.projectsKey)
+    this.bzdConfig = parse(allConfigData)
+    const projectConfig = this.bzdConfig.projects
     if (projectConfig) {
       return projectConfig
     }
-    return new YAMLMap()
+    return []
   }
 
   async readConfig(): Promise<string> {

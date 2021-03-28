@@ -1,4 +1,4 @@
-import {YAMLMap} from 'yaml'
+import BzdProject from './project-config'
 
 export default class BzdConfig {
   static projectsKey = 'projects'
@@ -7,5 +7,5 @@ export default class BzdConfig {
 
   configFile !: string
 
-  projects!: YAMLMap
+  projects!: BzdProject[]
 }
