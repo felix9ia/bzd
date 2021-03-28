@@ -35,13 +35,8 @@ export default class BzdConfigure extends Command {
     }
   }
 
-  async getProjects() {
-    const oldProjectConfig = await this.getExistProjectConfigs()
-    this.log('getProjects:' + oldProjectConfig)
-  }
-
   async saveProject(projectConfig: ProjectConfig) {
-    const oldProjectConfigs = await this.getExistProjectConfigs()
+    const oldProjectConfigs = await this.getProjects()
     this.log('oldProjectConfigs are: ' + oldProjectConfigs)
 
     const newProjectConfig = projectConfig
@@ -68,7 +63,7 @@ export default class BzdConfigure extends Command {
     return oldProjectConfigs
   }
 
-  async getExistProjectConfigs(): Promise<ProjectConfig[]> {
+  async getProjects(): Promise<ProjectConfig[]> {
     let allConfigData: string
 
     try {
