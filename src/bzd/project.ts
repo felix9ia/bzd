@@ -1,23 +1,23 @@
+import * as fs from 'fs'
 import {Command} from '@oclif/command'
 import BzdConfig from './config'
+import ProjectConfig from './project-config'
 
 export default class BzdProject extends Command {
   private bzdConfig: BzdConfig
 
-  name = ''
-
-  path = ''
+  configs: ProjectConfig
 
   // backup overload https://juejin.cn/post/6872903521440628744
   constructor(args: any, opts: any, name?: string, path?: string) {
     super(args, opts)
     this.bzdConfig = new BzdConfig(args, opts)
-
+    this.configs = new ProjectConfig()
     if (name) {
-      this.name = name
+      this.configs.name = name
     }
     if (path) {
-      this.path = path
+      this.configs.path = path
     }
   }
 
@@ -30,8 +30,22 @@ export default class BzdProject extends Command {
   }
 
   async initProject(repoPath: string) {
-    this.name = this.parseProjectName(repoPath)
-    this.path = await this.bzdConfig.createProjectDir(this)
+    this.configs.name = this.parseProjectName(repoPath)
+    await this.createProject()
+    await this.bzdConfig.saveProject(this)
+  }
+
+  async createProject() {
+    const isExist = await this.bzdConfig.hasInitRootDir()
+    const projectPath = `${this.bzdConfig.rootDir}/${this.configs.name}`
+
+    if (isExist) {
+      throw new Error(`project has exist, path is: ${projectPath}`)
+    } else {
+      await fs.promises.mkdir(projectPath, {recursive: true})
+      this.log(`project path: ${projectPath}`)
+    }
+    this.configs.path = projectPath
   }
 
   async run() {

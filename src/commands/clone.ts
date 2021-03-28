@@ -30,8 +30,8 @@ export default class Clone extends Command {
 
     const repoPath = args.repo
     await this.bzdProject.initProject(repoPath)
-    const projectPath = this.bzdProject.path
-    const projectName = this.bzdProject.name
+    const projectPath = this.bzdProject.configs.path
+    const projectName = this.bzdProject.configs.name
 
     try {
       if (repoPath) {
