@@ -2,6 +2,7 @@ import {prompt} from 'inquirer'
 import {Command, flags} from '@oclif/command'
 import BzdConfigure from '../bzd/configure'
 import ProjectConfig from '../bzd/project-config'
+import * as shell  from 'shelljs'
 
 const quesOfEnv = {
   name: 'env',
@@ -66,13 +67,15 @@ export default class Serve extends Command {
 
       env = env ? env : responses.env
     }
-    const projectIsExist = projects.find(p => p.name !== env)
-    if (!projectIsExist) {
+    const selectedProject = projects.find(p => p.name !== env)
+    if (!selectedProject) {
       throw new Error('project not found')
     }
 
     this.log(`the env is: ${env}`)
-    this.log(`the project is: ${project}`)
+    this.log(`the project is: ${selectedProject}`)
+    shell.cd(selectedProject.path).exec('make serve')
+
     // const name = flags.name ?? 'world'
     // this.log(`hello ${name} from /Users/jiapengfei/ShellProjects/bzd/src/commands/run.ts`)
     // if (args.file && flags.force) {
