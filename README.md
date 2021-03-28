@@ -43,17 +43,18 @@ USAGE
 
 # Commands
 <!-- commands -->
-* [`bzd clone [FILE]`](#bzd-clone-file)
+* [`bzd clone [REPO]`](#bzd-clone-repo)
 * [`bzd hello [FILE]`](#bzd-hello-file)
 * [`bzd help [COMMAND]`](#bzd-help-command)
+* [`bzd run [FILE]`](#bzd-run-file)
 
-## `bzd clone [FILE]`
+## `bzd clone [REPO]`
 
-describe the command here
+clone your repository of build project
 
 ```
 USAGE
-  $ bzd clone [FILE]
+  $ bzd clone [REPO]
 
 OPTIONS
   -f, --force
@@ -99,4 +100,20 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+
+## `bzd run [FILE]`
+
+describe the command here
+
+```
+USAGE
+  $ bzd run [FILE]
+
+OPTIONS
+  -f, --force
+  -h, --help       show CLI help
+  -n, --name=name  name to print
+```
+
+_See code: [src/commands/run.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/src/commands/run.ts)_
 <!-- commandsstop -->

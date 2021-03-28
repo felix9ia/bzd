@@ -7,7 +7,7 @@ export default class Clone extends Command {
 
   private bzdConfigure: BzdConfigure
 
-  static description = 'describe the command here'
+  static description = 'clone your repository of build project'
 
   static flags = {
     help: flags.help({char: 'h'}),

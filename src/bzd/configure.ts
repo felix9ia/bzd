@@ -38,23 +38,6 @@ export default class BzdConfigure extends Command {
     }
   }
 
-  async getExistProjectConfigs(): Promise<any> {
-    let allConfigData: string
-
-    try {
-      allConfigData = await this.readConfig()
-    } catch (error) {
-      allConfigData = ''
-    }
-
-    const configDoc = parseDocument(allConfigData)
-    const projectConfig = configDoc.get(BzdConfig.projectsKey)
-    if (projectConfig) {
-      return projectConfig
-    }
-    return new YAMLMap()
-  }
-
   async createProjectConfig(project: BzdProject): Promise<YAMLMap> {
     const configMapByProjectName = new YAMLMap()
     configMapByProjectName.set(project.configs.name, project.configs)
@@ -84,6 +67,23 @@ export default class BzdConfigure extends Command {
     oldConfigMap.set(projectName, newConfigMap.get(projectName))
     this.log('current config is: ' + oldConfigMap)
     return oldConfigMap
+  }
+
+  async getExistProjectConfigs(): Promise<any> {
+    let allConfigData: string
+
+    try {
+      allConfigData = await this.readConfig()
+    } catch (error) {
+      allConfigData = ''
+    }
+
+    const configDoc = parseDocument(allConfigData)
+    const projectConfig = configDoc.get(BzdConfig.projectsKey)
+    if (projectConfig) {
+      return projectConfig
+    }
+    return new YAMLMap()
   }
 
   async readConfig(): Promise<string> {
