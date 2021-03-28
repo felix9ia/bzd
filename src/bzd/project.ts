@@ -18,18 +18,23 @@ export default class BzdProject extends Command {
     }
   }
 
-  parseProjectName(repo: string) {
-    if (!repo) {
-      throw new Error('repo is empty')
+  async isExist(projectPath: string): Promise<boolean> {
+    try {
+      await fs.promises.stat(projectPath)
+      return true
+    } catch (error) {
+      return false
     }
-    const keys = repo.split('/')
-    return keys[keys.length - 1].split('.')[0]
   }
 
-  async create(repoPath: string, rootDir: string) {
+  async create(projectName: string, repoPath: string, rootDir: string) {
     this.configs.repoPath = repoPath
-    this.configs.name = this.parseProjectName(repoPath)
+    this.configs.name = projectName
     const projectPath = `${rootDir}/${this.configs.name}`
+
+    if (await this.isExist(projectPath)) {
+      throw new Error(`project path "${projectPath}" has exist`)
+    }
     await fs.promises.mkdir(projectPath, {recursive: true})
     this.configs.path = projectPath
   }
