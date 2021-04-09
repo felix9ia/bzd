@@ -139,55 +139,7 @@ _See code: [src/commands/serve.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/s
 * [`bzd hello [FILE]`](#bzd-hello-file)
 * [`bzd help [COMMAND]`](#bzd-help-command)
 
-## `bzd clone [REPO]`
 
-clone your repository of build project
+# 参考
 
-```
-USAGE
-  $ bzd clone [REPO]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-```
-
-_See code: [src/commands/clone.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/src/commands/clone.ts)_
-
-## `bzd hello [FILE]`
-
-describe the command here
-
-```
-USAGE
-  $ bzd hello [FILE]
-
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
-
-EXAMPLE
-  $ bzd hello
-  hello world from ./src/hello.ts!
-```
-
-_See code: [src/commands/hello.ts](https://github.com/felix9ia/bzd/blob/v0.0.1/src/commands/hello.ts)_
-
-## `bzd help [COMMAND]`
-
-display help for bzd
-
-```
-USAGE
-  $ bzd help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
+[NVM](https://github.com/nvm-sh/nvm)  
